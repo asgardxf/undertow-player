@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import logo from './logo.svg';
 
 //components
 import { Layout, Menu } from 'antd';
@@ -10,12 +9,12 @@ import './App.scss';
 import 'antd/dist/antd.css'
 
 const { Header, Content } = Layout;
-const url = '/getData/'
+const url = '/getData/';
 
 class App extends Component {
   state = {
     data: []
-  }
+  };
 
   componentDidMount() {
      fetch(url).then(res => res.json())

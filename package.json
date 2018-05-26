@@ -7,7 +7,8 @@
     "antd": "^3.5.3",
     "custom-react-scripts": "0.2.2",
     "react": "^16.4.0",
-    "react-dom": "^16.4.0"
+    "react-dom": "^16.4.0",
+    "react-sound": "^1.2.0"
   },
   "scripts": {
     "start": "react-scripts start",

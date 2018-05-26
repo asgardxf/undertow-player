@@ -2,14 +2,16 @@ import React from 'react'
 
 import {Modal} from 'antd'
 
+import Playlist from './Playlist'
+
 const resourcesRoot = 'http://localhost:8000/';
 
 class Album extends React.Component {
   state = {
     modalIsOpen: false,
+    albumInfo: {}
   }
 
-  references = {}
 
   toggleModal = () => {
     this.setState(prevState => {
@@ -32,40 +34,25 @@ class Album extends React.Component {
     const {path, description, link} = this.props;
     return <div className="album-preview">
       <p><a href={link}>original post</a></p>
-      <img className="cover" src={resourcesRoot + path + '/cover'} onClick={this.loadInfo}/>
+      <img className="cover" src={resourcesRoot + path + '/cover'} onClick={this.loadInfo} alt="album art"/>
       <div className="description" onClick={this.loadInfo}>{description}</div>
       {this.renderModal()}
     </div>
   }
 
-  playNext(index: number) {
-    return () => {
-      const element = this.references[index+1]
-      if (element) {
-        element.play()
-      }
-    }
-  }
 
   renderModal() {
-    const {files = []} = this.state.albumInfo || {};
     return <Modal
       visible={this.state.modalIsOpen}
       title="Album view"
       onOk={this.toggleModal}
-    >{
-      files.map((song, index) => {
-        return <audio
-          ref={ref => this.references[index] = ref}
-          src={encodeURI(resourcesRoot + this.props.path + '/' + song)}
-          key={index}
-          controls={true}
-          onEnded={
-            this.playNext(index)
-          }
-        />
-      })
-    }</Modal>
+      destroyOnClose
+    >
+      <Playlist
+        source={this.state.albumInfo.songs}
+        baseUrl={this.props.path}
+      />
+    </Modal>
   }
 }
 

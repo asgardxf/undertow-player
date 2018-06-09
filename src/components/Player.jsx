@@ -1,22 +1,40 @@
 import React from 'react'
-import Sound from 'react-sound'
 
 import { Icon } from 'antd'
 
 export default class Player extends React.Component {
+
+  saveAudio = audio => this.audio = audio
+
+  componentDidMount() {
+    this.audio.addEventListener('ended', () => {
+      this.props.nextTrack()
+    })
+  }
+
+  componentDidUpdate(oldProps) {
+    if (this.props.isPlaying && !oldProps.isPlaying) {
+      this.audio.play()
+    }
+
+    if (!this.props.isPlaying && oldProps.isPlaying) {
+      this.audio.pause()
+    }
+    if (this.props.url !== oldProps.url && this.props.isPlaying) {
+      this.audio.play()
+    }
+  }
+
+
+
   render() {
-    const {url, title, isPlaying, nextTrack, prevTrack, togglePlay} = this.props
+    const {url, title} = this.props
     return <div className="undertow-player-controls">
-      <Sound
-        url={url}
-        playStatus={isPlaying ? Sound.status.PLAYING : Sound.status.PAUSED}
-        onFinishedPlaying={nextTrack}
+      <audio
+        src={url}
+        ref={this.saveAudio}
+        controls
       />
-      <div className="buttons">
-        <Icon type="fast-backward" onClick={prevTrack}/>
-        <Icon type={isPlaying ? "pause-circle" : 'play-circle'} onClick={togglePlay}/>
-        <Icon type="fast-forward" onClick={nextTrack}/>
-      </div>
       <div className="current-track">
         {title}
       </div>

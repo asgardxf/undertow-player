@@ -1,7 +1,5 @@
 import React from 'react'
 
-import { Icon } from 'antd'
-
 export default class Player extends React.Component {
 
   saveAudio = audio => this.audio = audio

@@ -5,6 +5,11 @@ import json
 from os import path
 from .models import Album
 from django.core.serializers import serialize
+import time
+import hashlib
+import urllib.request
+import urllib.parse
+from django.views.decorators.csrf import csrf_exempt
 
 # Create your views here.
 
@@ -63,3 +68,35 @@ def album(request, id):
 		'songs': json.loads(a.songs_info),
 		'path': a.path,
 	})
+
+@csrf_exempt
+def scrobble(request):
+	root = 'http://ws.audioscrobbler.com/2.0/'
+	params = json.loads(request.body.decode())
+	data = {
+		'method':'track.scrobble',
+		'api_key':'xxxx',
+		'sk':'xxxx',
+		'artist[]':params.get('artist'),
+		'track[]':params.get('track'),
+		'timestamp[]':str(time.time()),
+	}
+	print(data)
+	data['api_sig'] = getApiSig(data)
+	data = urllib.parse.urlencode(data).encode()
+	with urllib.request.urlopen(root, data) as f:
+		print(f.read().decode())
+	return JsonResponse({'status':'ok'})
+
+
+
+def getApiSig(data):
+	m = hashlib.md5()
+	keys = ["api_key", "artist[]", "method", "sk", "timestamp[]", "track[]"]
+	secret = 'xxxx'
+	s = ''
+	for k in keys:
+		s+=k + data[k]
+	s+=secret
+	m.update(s.encode())
+	return m.hexdigest()

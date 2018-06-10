@@ -60,4 +60,7 @@
 .main-content {
   display: flex;
   flex-wrap: wrap;
+  .artist, .title {
+    margin: 5px;
+  }
 }

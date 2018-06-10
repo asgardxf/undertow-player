@@ -3,11 +3,21 @@ import React from 'react'
 
 import Player from './Player'
 const resourcesRoot = 'http://localhost:8000/';
+
+function scrobble(artist, track) {
+  return fetch('/scrobble/', {
+    method: 'POST', credentials: 'include', body: JSON.stringify({artist, track})
+  })
+}
+
+
 export default class Playlist extends React.Component {
   state = {
     isPlaying: false,
   }
   play = (url, title, currentIndex) => {
+    const song = this.props.source[currentIndex]
+    scrobble(song.attributes.artist, song.attributes.title)
     this.setState(prevState => {
       return {
         isPlaying: !prevState.isPlaying,
@@ -26,6 +36,7 @@ export default class Playlist extends React.Component {
           isPlaying: false,
         }
       }
+      scrobble(song.attributes.artist, song.attributes.title)
       return {
         currentIndex: currentIndex+1,
         url: resourcesRoot + '/' + this.props.baseUrl + '/' + song.path,
@@ -74,6 +85,7 @@ class Song extends React.Component {
     const {artist, title} = this.props
     return <div className="song" onClick={this.play}>
       <span className="artist">{artist}</span>
+      <span>-</span>
       <span className="title">{title}</span>
     </div>
   }

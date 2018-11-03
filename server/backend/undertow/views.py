@@ -3,7 +3,7 @@ import os
 import re
 import json
 from os import path
-from .models import Album
+from .models import Playlist
 from django.core.serializers import serialize
 import time
 import hashlib
@@ -16,15 +16,15 @@ from django.views.decorators.csrf import csrf_exempt
 
 from django.http import HttpResponse, JsonResponse
 
-d = '/home/asgard/Music/psychedelic'
+d = '/media/s/d4082aac-d82a-430c-9778-0adee8b0c0da/asgard/Music/psychedelic/'
 
 originalPostRoot = 'https://m.vk.com/wall-29318096_'
 
 def index(request):
 	import eyed3
 	result = []
-	for album in os.listdir(d):
-		dirName = path.join(d, album)
+	for playlist in os.listdir(d):
+		dirName = path.join(d, playlist)
 		if not path.isdir(dirName):
 			continue
 		if not path.exists(path.join(dirName, 'cover')):
@@ -32,10 +32,10 @@ def index(request):
 		with open(path.join(dirName, 'description.txt')) as f:
 			desc = f.read()
 
-		match = re.search('^(\d+)', album)
+		match = re.search('^(\d+)', playlist)
 		originalPost = originalPostRoot + match.group(1)
 		data = {
-			'path':album,
+			'path':playlist,
 			'description': desc,
 			'link': originalPost,
 		}
@@ -54,16 +54,16 @@ def index(request):
 			songs.append({'id': index, 'path':file, 'attributes':tags})
 		data['songs_info'] = json.dumps(songs)
 
-		result.append(Album(**data))
-	Album.objects.bulk_create(result)
+		result.append(Playlist(**data))
+	Playlist.objects.bulk_create(result)
 	return JsonResponse({'data': 'ok'})
 
 def getData(request):
-	result = Album.objects.all().values('path', 'description', 'link', 'id')
+	result = Playlist.objects.all().values('path', 'description', 'link', 'id')
 	return JsonResponse({'data':list(result)})
 
-def album(request, id):
-	a = Album.objects.get(pk=id)
+def playlist(request, id):
+	a = Playlist.objects.get(pk=id)
 	return JsonResponse({
 		'songs': json.loads(a.songs_info),
 		'path': a.path,

@@ -16,12 +16,12 @@ Including another URLconf
 #from django.conf.urls import url
 from django.urls import path
 from django.contrib import admin
-from undertow.views import index, getData, album, scrobble
+from undertow.views import index, getData, playlist, scrobble
 
 urlpatterns = [
 	path('index/', index),
 	path('getData/', getData),
-	path('album/<int:id>/', album),
+	path('playlist/<int:id>/', playlist),
     path('admin/', admin.site.urls),
     path('scrobble/', scrobble)
 ]

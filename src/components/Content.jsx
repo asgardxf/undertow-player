@@ -1,6 +1,6 @@
 import React from 'react';
 
-import Album from './Album'
+import PlayListPreview from './PlayListPreview'
 
 
 class Content extends React.Component {
@@ -8,7 +8,7 @@ class Content extends React.Component {
     const {data} = this.props
     return <div className="main-content">{
       data.map((item, index) => {
-        return <Album description={item.description} path={item.path} key={index} link={item.link} id={item.id}/>
+        return <PlayListPreview description={item.description} path={item.path} key={index} link={item.link} id={item.id}/>
       })
     }</div>
   }

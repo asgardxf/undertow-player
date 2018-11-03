@@ -6,7 +6,7 @@ import Playlist from './Playlist'
 
 const resourcesRoot = 'http://localhost:8000/';
 
-class Album extends React.Component {
+class PlayListPreview extends React.Component {
   state = {
     modalIsOpen: false,
     albumInfo: {}
@@ -20,7 +20,7 @@ class Album extends React.Component {
   }
 
   loadInfo = () => {
-    fetch('/album/' + this.props.id).then(
+    fetch('/playlist/' + this.props.id).then(
       res => res.json()
     ).then(
       json => {
@@ -34,7 +34,7 @@ class Album extends React.Component {
     const {path, description, link} = this.props;
     return <div className="album-preview">
       <p><a href={link}>original post</a></p>
-      <img className="cover" src={resourcesRoot + path + '/cover'} onClick={this.loadInfo} alt="album art"/>
+      <img className="cover" src={resourcesRoot + path + '/cover'} onClick={this.loadInfo} alt="playlist image"/>
       <div className="description" onClick={this.loadInfo}>{description}</div>
       {this.renderModal()}
     </div>
@@ -56,4 +56,4 @@ class Album extends React.Component {
   }
 }
 
-export default Album
+export default PlayListPreview

@@ -34,7 +34,7 @@ class PlayListPreview extends React.Component {
     const {path, description, link} = this.props;
     return <div className="album-preview">
       <p><a href={link}>original post</a></p>
-      <img className="cover" src={resourcesRoot + path + '/cover'} onClick={this.loadInfo} alt="playlist image"/>
+      <img className="cover" src={resourcesRoot + path + '/cover'} onClick={this.loadInfo} alt="playlist"/>
       <div className="description" onClick={this.loadInfo}>{description}</div>
       {this.renderModal()}
     </div>
@@ -47,6 +47,7 @@ class PlayListPreview extends React.Component {
       title="Album view"
       onOk={this.toggleModal}
       destroyOnClose
+      width={1000}
     >
       <Playlist
         source={this.state.albumInfo.songs}

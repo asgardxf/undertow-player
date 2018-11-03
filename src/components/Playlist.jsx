@@ -1,5 +1,5 @@
 import React from 'react'
-
+import {Table, Button} from 'antd'
 
 import Player from './Player'
 const resourcesRoot = 'http://localhost:8000/';
@@ -12,8 +12,27 @@ function scrobble(artist, track) {
 
 
 export default class Playlist extends React.Component {
-  state = {
-    isPlaying: false,
+
+  constructor(props) {
+    super(props)
+    this.state = {
+      isPlaying: false,
+      columns: [
+        {
+          key:'playButton', render: (text, record, index) => {
+            return <PlayButton
+              itemIndex={index}
+              url={text}
+              title={record.attributes.title}
+              play={this.play}
+            />
+          }, dataIndex: 'path'
+        },
+        {title: 'Artist', key: 'artist', dataIndex: 'attributes.artist'},
+        {title: 'Title', key: 'title', dataIndex: 'attributes.title'},
+      ]
+    }
+
   }
   play = (url, title, currentIndex) => {
     const song = this.props.source[currentIndex]
@@ -56,37 +75,28 @@ export default class Playlist extends React.Component {
   render() {
     const {source = []} = this.props
     return <div className="playlist">
-      {
-        source.map((song, index) => <Song
-          artist={song.attributes.artist}
-          title={song.attributes.title}
-          url={song.path}
-          key={index}
-          itemIndex={index}
-          play={this.play}
-        />)
-      }
+      <Table
+        columns={this.state.columns}
+        dataSource={source}
+        pagination={false}
+        rowKey="id"
+      />
+      <br/>
       <Player {...this.state} nextTrack={this.nextTrack} togglePlay={this.togglePlay}/>
     </div>
   }
 }
 
-class Song extends React.Component {
-  static defaultProps = {
-    artist: 'UNKNOWN',
-    title: 'UNKNOWN',
-  }
+class PlayButton extends React.Component {
 
   play = () => {
     const {play, url, title, itemIndex} = this.props
     play(url, title, itemIndex)
   }
   render() {
-    const {artist, title} = this.props
-    return <div className="song" onClick={this.play}>
-      <span className="artist">{artist}</span>
-      <span>-</span>
-      <span className="title">{title}</span>
-    </div>
+    return <Button
+      icon="caret-right"
+      onClick={this.play}
+    />
   }
 }

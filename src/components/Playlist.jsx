@@ -34,34 +34,30 @@ export default class Playlist extends React.Component {
     }
 
   }
-  play = (url, title, currentIndex) => {
-    const song = this.props.source[currentIndex]
-    scrobble(song.attributes.artist, song.attributes.title)
-    this.setState(prevState => {
-      return {
-        isPlaying: !prevState.isPlaying,
-        title,
-        url: resourcesRoot + '/' + this.props.baseUrl + '/' + url,
-        currentIndex,
-      }
+
+  updatePlayerState = (index, additionalUpdates) => {
+    const song = this.props.source[index]
+    if (!song) {
+      this.setState({isPlaying:false})
+      return
+    }
+    const {artist, title} = song.attributes
+    scrobble(artist, title)
+    this.setState({
+      title,
+      url: resourcesRoot + this.props.baseUrl + '/' + encodeURIComponent(song.path),
+      currentIndex: index,
+      ...additionalUpdates,
     })
   }
 
+  play = (index) => {
+    this.updatePlayerState(index, {isPlaying: true})
+  }
+
   nextTrack = () => {
-    this.setState(({currentIndex}) => {
-      const song = this.props.source[currentIndex+1]
-      if (!song) {
-        return {
-          isPlaying: false,
-        }
-      }
-      scrobble(song.attributes.artist, song.attributes.title)
-      return {
-        currentIndex: currentIndex+1,
-        url: resourcesRoot + '/' + this.props.baseUrl + '/' + song.path,
-        title: song.attributes.title,
-      }
-    })
+    const {currentIndex} = this.state
+    this.updatePlayerState(currentIndex + 1)
   }
 
   togglePlay = () => {
@@ -90,13 +86,13 @@ export default class Playlist extends React.Component {
 class PlayButton extends React.Component {
 
   play = () => {
-    const {play, url, title, itemIndex} = this.props
-    play(url, title, itemIndex)
+    const {play, itemIndex} = this.props
+    play(itemIndex)
   }
   render() {
     return <Button
       icon="caret-right"
       onClick={this.play}
     />
-  }
+  }//
 }
